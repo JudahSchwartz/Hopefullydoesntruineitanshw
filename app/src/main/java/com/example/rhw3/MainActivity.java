@@ -49,6 +49,6 @@ public class MainActivity extends AppCompatActivity {
         int numGuessed = Integer.parseInt(currentButton.getText().toString());
         String msg = "You clicked on " + currentButton.getText().toString();
         msg += mObjGridGameAdapter.isWinningNumber(numGuessed) ? "Winner!" : "Loser!";
-        Snackbar.make(sbCo      ntainer, msg, Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(sbContainer, msg, Snackbar.LENGTH_SHORT).show();
     }
 }
