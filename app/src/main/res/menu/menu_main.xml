@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:support="http://schemas.android.com/tools">
+
+    <item
+        android:id="@+id/action_new_game"
+        android:title="New Game"
+        android:icon="@android:drawable/ic_media_play"
+        app:showAsAction="ifRoom|withText"
+        android:onClick="newGame"/>
+    <item
+        android:title="About"
+        support:showAsAction="never"
+        android:onClick="showAbout"/>
+</menu>

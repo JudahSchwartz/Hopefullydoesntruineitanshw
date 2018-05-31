@@ -11,45 +11,21 @@ import java.util.Random;
 
 
 public class GridGameAdapter extends RecyclerView.Adapter<GridGameAdapter.ViewHolder> {
-    public static final int DEFAULT_ELEMENTS = 16;
-    private int mElts;
-    private int mWinner;
-    private Random mGenerator;
-    private boolean [] mSquares;
-    public GridGameAdapter()
+    public static final int SQUARES = 64;
+
+    public Board board;
+
+    private Spot [] mSquares;
+    public GridGameAdapter(Board board)
     {
-        this(DEFAULT_ELEMENTS);
+       mSquares = new Spot[SQUARES];
+       this.board = board;
 
     }
-    public GridGameAdapter(int elts)
-    {
-        mElts = elts;
-        if(elts % Math.sqrt(elts)==0)
-            mSquares = new boolean[elts];
-        else
-            throw new IllegalArgumentException("Number must be a square");
-        mGenerator  = new Random();
-    }
 
-    private void startGame()
+    public void setBoard(Board board)
     {
-
-        mWinner = mGenerator.nextInt(mElts);
-        mSquares[mWinner] = true;
-    }
-
-    private void startNewGame() {
-        mSquares[mWinner] = false;
-        startGame();
-    }
-
-    public int getWinningNumber()
-    {
-        return mWinner;
-    }
-    public boolean isWinningNumber(int num)
-    {
-        return mSquares[num];
+        this.board = board;
     }
     @NonNull
     @Override
@@ -60,7 +36,19 @@ public class GridGameAdapter extends RecyclerView.Adapter<GridGameAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.mButton.setText(Integer.toString(position+1));
+
+        //throw new RuntimeException("Howdy");
+         holder.mButton.setTag(Integer.toString(position));
+         switch (board.BoardState()[position/8][position%8])
+        {
+            case BLACK:
+                holder.mButton.setText("\u2022");
+                break;
+            case WHITE:
+                holder.mButton.setText("\u25E6");
+                break;
+        }
+
     }
 
     @Override
