@@ -18,13 +18,52 @@ import android.widget.TextView;
 
 import android.widget.Toast;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
     GridGameAdapter mObjGridGameAdapter;
-    Board board = new Board();
+    RecyclerView objRecyclerView;
+    transient Board board = new Board();
+    private boolean aiPlaying;
 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+       int id = item.getItemId();
+        switch (id) {
+            case R.id.ai_playing:
+            case R.id.human_playing:
+                if (item.isChecked())
+
+                    item.setChecked(false);
+                else
+                    item.setChecked(true);
+
+                aiPlaying = id ==R.id.ai_playing;
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    @Override
+    protected void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("adapter",mObjGridGameAdapter);
+        outState.putSerializable("board",board);//todo saved twice?
+    }
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState)
+    {
+        super.onRestoreInstanceState(savedInstanceState);
+        mObjGridGameAdapter = (GridGameAdapter) savedInstanceState.getSerializable("adapter");
+        mObjGridGameAdapter.overWriteBoard(savedInstanceState);
+        objRecyclerView.setAdapter(mObjGridGameAdapter);
+        board = mObjGridGameAdapter.board;
+
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -34,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void setUpBoard() {
-        RecyclerView objRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        objRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         objRecyclerView.setHasFixedSize(true);
 
         RecyclerView.LayoutManager objLayoutManager = new GridLayoutManager(this, 8); // cols/rows
@@ -57,10 +96,17 @@ public class MainActivity extends AppCompatActivity {
         if(board.CanPlacePiece(Integer.parseInt(view.getTag().toString())/8,Integer.parseInt(view.getTag().toString())%8,board.turn))
         {
             board.PlacePiece(Integer.parseInt(view.getTag().toString())/8,Integer.parseInt(view.getTag().toString())%8);
+
+            if(aiPlaying)
+            {
+                Toast.makeText(getApplicationContext(),"aiIsPlaying", Toast.LENGTH_SHORT).show();
+                OthelloAI ai = new OthelloAI(Piece.BLACK);
+                ai.MakeMove(board.PossibleMoves());
+            }
         }
         else
         {
-            Toast.makeText(getApplicationContext(),String.format("Not a valid move, fat fingers. You clicked %d, %d",Integer.parseInt(view.getTag().toString())/8,Integer.parseInt(view.getTag().toString())%8), Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),String.format("Not a valid move, fat fingers. You clicked %d, %d",Integer.parseInt(view.getTag().toString())/8,Integer.parseInt(view.getTag().toString())%8), Toast.LENGTH_SHORT).show();
         }
         mObjGridGameAdapter.notifyDataSetChanged();
     }
@@ -239,9 +285,9 @@ class Human extends Player {
 
 //}
 
-class Spot
+class Spot implements Serializable
 {
-    private Board board;
+    private Board board;//todo make transient?
     public Point point;
     public Piece piece; //null for empty spot
 
@@ -317,7 +363,7 @@ class Spot
     }
 }
 
-class Board
+class Board implements Serializable
 {
     public Spot[][] spots = new Spot[8][8];
     public Piece turn = Piece.BLACK;

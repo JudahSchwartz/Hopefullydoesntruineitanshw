@@ -13,4 +13,11 @@
         android:title="About"
         support:showAsAction="never"
         android:onClick="showAbout"/>
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/ai_playing"
+            android:title="AI Playing"
+            android:checked="true"/>
+        <item android:id="@+id/human_playing"
+            android:title="Human Playing" />
+    </group>
 </menu>

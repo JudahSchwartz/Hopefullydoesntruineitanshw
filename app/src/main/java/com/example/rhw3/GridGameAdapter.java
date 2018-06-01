@@ -1,5 +1,6 @@
 package com.example.rhw3;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,18 +8,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import java.io.Serializable;
 import java.util.Random;
 
 
-public class GridGameAdapter extends RecyclerView.Adapter<GridGameAdapter.ViewHolder> {
+public class GridGameAdapter extends RecyclerView.Adapter<GridGameAdapter.ViewHolder> implements Serializable{
     public static final int SQUARES = 64;
 
     public Board board;
 
-    private Spot [] mSquares;
+
+    public void overWriteBoard(Bundle savedInstanceState)
+    {
+       board = (Board) savedInstanceState.getSerializable("board");
+       notifyDataSetChanged();
+    }
     public GridGameAdapter(Board board)
     {
-       mSquares = new Spot[SQUARES];
+
        this.board = board;
 
     }
@@ -53,7 +60,7 @@ public class GridGameAdapter extends RecyclerView.Adapter<GridGameAdapter.ViewHo
 
     @Override
     public int getItemCount() {
-        return mSquares.length;
+        return 64;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
