@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     GridGameAdapter mObjGridGameAdapter;
     RecyclerView objRecyclerView;
     transient Board board = new Board();
-    private boolean aiPlaying;
+    private boolean aiPlaying = true;
 
 
     @Override
@@ -100,8 +100,9 @@ public class MainActivity extends AppCompatActivity {
             if(aiPlaying)
             {
                 Toast.makeText(getApplicationContext(),"aiIsPlaying", Toast.LENGTH_SHORT).show();
-                OthelloAI ai = new OthelloAI(Piece.BLACK);
-                ai.MakeMove(board.PossibleMoves());
+                OthelloAI ai = new OthelloAI(board.turn);
+                Point p = ai.MakeMove(board.PossibleMoves());
+                board.PlacePiece(p.x,p.y);
             }
         }
         else
